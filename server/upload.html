@@ -1,0 +1,35 @@
+<html>
+    <head>
+    <title>Uploads</title>
+    </head>
+    <body>
+        <form action="" name="uploadForm" method="post" enctype="multipart/form-data">
+            Name:<input type="text" name="userName">
+            <br>
+            Contact:<input type="number" name="userContact">
+            <br>
+            File: <input type="file" name="file" accept="image/*">
+            <input type="submit" value="Submit" id="submitButton">
+        </form>
+        <h5 id='uploadMessage'></h5>
+    <script>
+    document.uploadForm.action='/api/upload';
+    document.uploadForm.addEventListener('submit',function(e){
+        e.preventDefault();
+        document.getElementById("uploadMessage").innerHTML="<h5>WAIT</h5>"
+        fetch(event.target.action, {
+            method: 'POST',
+            body:new FormData(event.target) // event.target is the form
+        }).then((resp) => {
+            if(resp.status==200){
+                document.getElementById("uploadMessage").innerHTML=`Success ...`
+            };
+        }).catch((error) => {
+            console.log(error);
+        });
+
+    });
+    </script>
+    </body>
+    
+</html>
