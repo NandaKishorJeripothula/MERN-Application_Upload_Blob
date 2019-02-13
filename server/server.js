@@ -33,9 +33,14 @@ const reactuplodsSchema= new mongoose.Schema({
 var up = mongoose.model('reactuploads', reactuplodsSchema);
 
 //mongod.exe --dbpath D:\GitHub\MongoDB\data\db
-mongoose.connect('mongodb://127.0.0.1:27017/reactUploads', { useNewUrlParser: true });
-const connection = mongoose.connection;
-
+var databaseURI='mongodb://127.0.0.1:27017/reactUploads';
+mongoose.connect(databaseURI , { useNewUrlParser: true }, function(error) {
+  // Check error in initial connection. There is no 2nd param to the callback.
+  if(error){
+      console.log("MongoDB conncetion Error");
+  }
+});
+var connection= mongoose.connection;
 connection.once('open', function() {
     console.log("MongoDB database connection established successfully");
 })
@@ -49,7 +54,8 @@ app.get('/upload',function(req,res){
 })
 
 //Retrive the image with contact 
-app.get('/api/:id',function(req,res){
+/**
+ * app.get('/api/:id',function(req,res){
     var id= req.params.id;
     connection.db.collection('reactuploads')
     .findOne({_id:id},function(err,result){
@@ -61,7 +67,15 @@ app.get('/api/:id',function(req,res){
         console.log(result);
         //res.setHeader('content-type', j)
     })
-});
+}); *//
+function getAll(){
+    console.log("from Get all\n")
+    up.find( function(err,data){
+        if(err) throw err;
+        else
+            console.log( data +" data here ");
+    });
+}
 //userUploads API
 app.post('/api/uploads',function(req,res){
     const form = new formidable.IncomingForm();
@@ -85,24 +99,28 @@ app.post('/api/uploads',function(req,res){
             console.log("upload successfull this is call back ");
             res.sendStatus(200);
         });
-        up.find(function(err,data){
-            if(err) throw err;
-            else
-                console.log(data +" data here ");
-        });
-
     });
 })
 
 app.get('/api/getUploads',function(req,res){
-    //res.send(JSON.stringify(up.find()));
-    up.find('',function(err,data){
+    up.find( function(err,data){
         if(err) throw err;
-        console.log(data);
-    })
-
+        else
+           res.send( data +" data here ");
+    });
 });
 
+app.get('/api/getImageById/:id',function(req,res){
+    var id=req.params.id;
+    up.findById(id, function (err, data) {
+        if(err){
+            console.log(err);
+            res.sendStatus(404);
+        }
+        res.setHeader('content-type', data.userUpload.contentType);
+        res.send(data.userUpload.data);   
+    });
+})
 //When closing server or stopping server close DB connection
 app.on('close',function(){
     connection.close();
