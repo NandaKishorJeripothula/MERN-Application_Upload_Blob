@@ -110,6 +110,17 @@ app.get('/api/getUploads',function(req,res){
     });
 });
 
+//Get all the details except the binary data of the image 
+app.get('/api/getDetailsById/:id',function(req,res){
+    var id= req.params.id;
+    up.findById(id, ' userName.data userContact.data userUpload.name userUpload.contentType',function(err, data){
+        if(err){
+            res.sendStatus(404);
+        }
+        //console.log(data);'
+        res.send(data);
+    })
+});
 app.get('/api/getImageById/:id',function(req,res){
     var id=req.params.id;
     up.findById(id, function (err, data) {
@@ -119,6 +130,24 @@ app.get('/api/getImageById/:id',function(req,res){
         }
         res.setHeader('content-type', data.userUpload.contentType);
         res.send(data.userUpload.data);   
+    });
+})
+
+app.get('/api/getIdsByContact/:contact',function(req,res){
+    var contact= req.params.contact;
+    up.find({userContact:{data: contact}}, function (err, data) {
+        if(err){
+            console.log(err);
+            res.sendStatus(404);
+        }
+        //Its an array, can change it to object with{}
+        idList=[];
+        i=0;
+        data.forEach(element => {
+            idList[i]=(element._id);
+            i++;
+        });
+        res.send(idList);   
     });
 })
 //When closing server or stopping server close DB connection
