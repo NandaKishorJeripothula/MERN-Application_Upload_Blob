@@ -1,7 +1,7 @@
 {
   "name": "appbackend",
   "version": "1.0.0",
-  "description": "It's the nodeJS backend for handling the requests and forwarding the data to the mongoDB",
+  "description": "It's the nodeJS backend for handling the requests and forwarding the data to the mongoDB, node v6.11.4",
   "main": "server.js",
   "scripts": {
     "test": "node server"
