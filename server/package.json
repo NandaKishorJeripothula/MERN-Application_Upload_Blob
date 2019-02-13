@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NandaKishorJeripothula/React_Node_MongoDB.git"
+    "url": "git+https://github.com/NandaKishorJeripothula/MERN-Application_Upload_Blob"
   },
   "keywords": [
     "react",
@@ -22,9 +22,9 @@
   "author": "nandakishor j",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/NandaKishorJeripothula/React_Node_MongoDB/issues"
+    "url": "https://github.com/NandaKishorJeripothula/MERN-Application_Upload_Blob/issues"
   },
-  "homepage": "https://github.com/NandaKishorJeripothula/React_Node_MongoDB#readme",
+  "homepage": "https://github.com/NandaKishorJeripothula/MERN-Application_Upload_Blob#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
