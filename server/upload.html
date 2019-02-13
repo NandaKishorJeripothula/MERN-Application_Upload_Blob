@@ -12,8 +12,14 @@
             <input type="submit" value="Submit" id="submitButton">
         </form>
         <h5 id='uploadMessage'></h5>
+
+
+        <h5>Uploads</h5>
+        <div id='uploads'>
+            
+        </div>
     <script>
-    document.uploadForm.action='/api/upload';
+    document.uploadForm.action='/api/uploads';
     document.uploadForm.addEventListener('submit',function(e){
         e.preventDefault();
         document.getElementById("uploadMessage").innerHTML="<h5>WAIT</h5>"

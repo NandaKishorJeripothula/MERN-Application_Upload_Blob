@@ -13,7 +13,7 @@ const formidable=require('formidable');
 app.use(cors());
 app.use(bodyParser.json());
 
-const reactUplodsSchema= new mongoose.Schema({
+const reactuplodsSchema= new mongoose.Schema({
     userName:{
         data:String,
         contentType: String
@@ -23,13 +23,14 @@ const reactUplodsSchema= new mongoose.Schema({
         contentType: String
     },
     userUpload:{
+        name:String,
         data: Buffer,
         contentType: String
     }
     
 });
 //reactUploads is the collection name
-var up = mongoose.model('reactUploads', reactUplodsSchema);
+var up = mongoose.model('reactuploads', reactuplodsSchema);
 
 //mongod.exe --dbpath D:\GitHub\MongoDB\data\db
 mongoose.connect('mongodb://127.0.0.1:27017/reactUploads', { useNewUrlParser: true });
@@ -47,35 +48,60 @@ app.get('/upload',function(req,res){
     res.sendFile(path.resolve('upload.html'));
 })
 
+//Retrive the image with contact 
+app.get('/api/:id',function(req,res){
+    var id= req.params.id;
+    connection.db.collection('reactuploads')
+    .findOne({_id:id},function(err,result){
+        if(err){
+            throw err;
+            res.send("failed");
+            res.sendStatus(404);
+        }
+        console.log(result);
+        //res.setHeader('content-type', j)
+    })
+});
 //userUploads API
-app.post("/api/upload",function(req,res){
+app.post('/api/uploads',function(req,res){
     const form = new formidable.IncomingForm();
     form.parse(req, (error, fields, files) => {
-        //console.log(fields);
-        //console.log(files);
         if(error){
-        console.log(error);
-        res.send(error)
+            console.log(error);
+            res.send(error)
         }
-        
-        if(files.file/*Only when the req contains image init*/){
-            //Get the instance ( object )
-            var upload= new up;
-            upload.userName.data = fields.userName;
-            upload.userContact.data = fields.userContact.toString();
-            upload.userUpload.data=fs.readFileSync(path.resolve(files.file.path));
-            upload.userUpload.contentType=files.file.type;
-            upload.save(function(err,upload){
-                if(err) {
-                    res.sendStatus(504);
-                    throw err;
-                }
-                console.log("upload successfull");
-                res.sendStatus(200);
-            })
-        }
-    })
+        var upload= new up;
+        upload.userName.data     = fields.userName;
+        upload.userContact.data  = fields.userContact;
+        upload.userUpload.name          = files.file.name.toString();
+        upload.userUpload.data          = Buffer.from(fs.readFileSync(path.resolve(files.file.path)).toString('base64'),'base64');
+        upload.userUpload.contentType   = files.file.type
+
+        upload.save(function(err,upload){
+            if(err) {
+                res.sendStatus(504);
+                throw err;
+            }
+            console.log("upload successfull this is call back ");
+            res.sendStatus(200);
+        });
+        up.find(function(err,data){
+            if(err) throw err;
+            else
+                console.log(data +" data here ");
+        });
+
+    });
 })
+
+app.get('/api/getUploads',function(req,res){
+    //res.send(JSON.stringify(up.find()));
+    up.find('',function(err,data){
+        if(err) throw err;
+        console.log(data);
+    })
+
+});
 
 //When closing server or stopping server close DB connection
 app.on('close',function(){
