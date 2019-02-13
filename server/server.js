@@ -52,22 +52,6 @@ app.get('/',function(req,res){
 app.get('/upload',function(req,res){
     res.sendFile(path.resolve('upload.html'));
 })
-
-//Retrive the image with contact 
-/**
- * app.get('/api/:id',function(req,res){
-    var id= req.params.id;
-    connection.db.collection('reactuploads')
-    .findOne({_id:id},function(err,result){
-        if(err){
-            throw err;
-            res.send("failed");
-            res.sendStatus(404);
-        }
-        console.log(result);
-        //res.setHeader('content-type', j)
-    })
-}); *//
 function getAll(){
     console.log("from Get all\n")
     up.find( function(err,data){
@@ -100,7 +84,7 @@ app.post('/api/uploads',function(req,res){
             res.sendStatus(200);
         });
     });
-})
+});
 
 app.get('/api/getUploads',function(req,res){
     up.find( function(err,data){
@@ -110,6 +94,30 @@ app.get('/api/getUploads',function(req,res){
     });
 });
 
+// Step 1 to retrieve all the images uploaded by Contact
+//Iterate through the ids list and procees step 2 and step 3 
+app.get('/api/getIdsByContact/:contact',function(req,res){
+    var contact= req.params.contact;
+    up.find({userContact:{data: contact}}, function (err, data) {
+        if(err){
+            console.log(err);
+            res.sendStatus(404);
+        }
+        const idList= data.map(element => element._id);
+        //Its an array, can change it to object with{}
+        /* This is same as map funciton
+        idList=[];
+        i=0;
+        data.forEach(element => {
+            idList[i]=(element._id);
+            i++;
+        }); 
+        console.log(idList);
+        */
+        res.send(idList);   
+    });
+})
+//Step 2 Get the Image Name and DemoGraphic data of User 
 //Get all the details except the binary data of the image 
 app.get('/api/getDetailsById/:id',function(req,res){
     var id= req.params.id;
@@ -121,6 +129,8 @@ app.get('/api/getDetailsById/:id',function(req,res){
         res.send(data);
     })
 });
+
+//Step 3 Retrieve the Image with Id we have
 app.get('/api/getImageById/:id',function(req,res){
     var id=req.params.id;
     up.findById(id, function (err, data) {
@@ -133,27 +143,15 @@ app.get('/api/getImageById/:id',function(req,res){
     });
 })
 
-app.get('/api/getIdsByContact/:contact',function(req,res){
-    var contact= req.params.contact;
-    up.find({userContact:{data: contact}}, function (err, data) {
-        if(err){
-            console.log(err);
-            res.sendStatus(404);
-        }
-        //Its an array, can change it to object with{}
-        idList=[];
-        i=0;
-        data.forEach(element => {
-            idList[i]=(element._id);
-            i++;
-        });
-        res.send(idList);   
-    });
-})
 //When closing server or stopping server close DB connection
 app.on('close',function(){
     connection.close();
 })
+//Please maintain this API just above the listen method for app consistency
+app.get('*',function(req,res){
+    res.send("404 Route Not Found");
+    res.sendStatus(404);
+});
 app.listen(PORT, function() {
     console.log("Server is running on Port: " + PORT);
 });
