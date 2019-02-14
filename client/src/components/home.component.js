@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
+import {server, uploadAPI} from '../config';
 export default class home extends Component {
     constructor(props){
         super(props);
-        this.state={name:'Name',contact:'987654321'};
+        this.state={name:'',contact:''};
         this.handleSubmit= this.handleSubmit.bind(this);
         this.onContactChange= this.onContactChange.bind(this);
         this.onNameChange= this.onNameChange.bind(this);
+        this.fileInput = React.createRef();
+
     }
     onNameChange(evt){
         this.setState({name:evt.target.value});
@@ -15,11 +18,41 @@ export default class home extends Component {
     }
     handleSubmit(event) {
         event.preventDefault();
+        document.getElementById('spinner').classList.add('spinner-border');
         if(this.state.name.length<=1||this.state.contact.length<=1){
             alert("The fileds cannot be empty")
         }
-        console.log(this.state.name);
-        console.log(this.state.contact);
+        else{
+            var formData=new FormData();
+            formData.append('userName',this.state.name);
+            formData.append('userContact',this.state.contact);
+            //console.log(this.state.name);
+            //console.log(this.state.contact);
+        }
+        if(this.fileInput.current.files[0]===undefined){
+            alert("Please select an image to upload");
+        }
+        else{
+            formData.append('file',this.fileInput.current.files[0])
+            //console.log("Uploadable file Name:"+this.fileInput.current.files[0].name);
+        }
+        fetch(server+uploadAPI, {
+            method: 'POST',
+            body:formData // dynamic formdata Object
+        }).then((resp) => {
+            if(resp.status===200){
+                document.getElementById('spinner').classList.remove('spinner-border');
+                document.getElementById('successMsg').innerText="Upload Success!!!";
+                this.setState({name:'',contact:''});
+                console.log("upload done")
+            };
+        }).catch((error) => {
+            document.getElementById('spinner').classList.remove('spinner-border');
+            document.getElementById('successMsg').innerText="Server Unreachable";
+            console.log(error);
+        });
+
+
         
       }
     render() {
@@ -31,14 +64,16 @@ export default class home extends Component {
                         <label>Name: </label>
                         <input
                             type="text"
-                            placeholder={this.state.name}
+                            value={this.state.name}
+                            placeholder='Ex. John'
                             onChange={this.onNameChange}
                             className="form-control"
                         />
                         <label>Contact: </label>
                         <input
                             type="number"
-                            placeholder={this.state.contact}   
+                            value={this.state.contact}
+                            placeholder='Ex. 987654321'  
                             onChange={this.onContactChange}
                             className="form-control"
                         />
@@ -48,11 +83,17 @@ export default class home extends Component {
                             <input 
                                 type="file" 
                                 name="file"
+                                accept="image/*"
+                                ref={this.fileInput}
                                 />
                         </div>
                         <input type="submit" value="Upload " className="btn btn-primary" />
                     </div>
                 </form>
+                <div id='spinner' role="status">
+                    <span className="sr-only">Loading...</span>
+                    <h3 id="successMsg"> </h3>
+                </div>
             </div>
         )
     }

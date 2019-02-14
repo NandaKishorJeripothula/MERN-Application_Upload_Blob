@@ -11,6 +11,7 @@ class App extends Component {
           <div >
           <Navbar/>
           <div className='container'>
+          
             <br/>
             <Route path="/" exact component={home} />
             <Route path="/getUploads" component={getUploads} />

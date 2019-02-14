@@ -69,6 +69,8 @@ app.post('/api/uploads',function(req,res){
             res.send(error)
         }
         var upload= new up;
+        //console.log(fields);
+        //console.log(files.file.name);
         upload.userName.data     = fields.userName;
         upload.userContact.data  = fields.userContact;
         upload.userUpload.name          = files.file.name.toString();
