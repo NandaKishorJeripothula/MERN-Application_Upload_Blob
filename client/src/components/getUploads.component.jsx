@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {server,getIdByContactAPI, getDetailsByIdAPI,getImageByIdAPI} from '../config'
+import {server,getIdByContactAPI} from '../config'
 import axios from 'axios';
 import { isUndefined } from 'util';
 import DataLoader from './dataLoder.component';
@@ -9,42 +9,8 @@ export default class getUploads extends Component {
         this.state={contact:'',searchResults:'',ids:[]};
         this.handleSubmit=this.handleSubmit.bind(this);
         this.onContactChange=this.onContactChange.bind(this);
-        this.getDetails= this.getDetails.bind(this);
-        this.getImage= this.getImage.bind(this);
     }
-    getDetails(e){
-        e.forEach(element => {
-            console.log(server + getDetailsByIdAPI + element.toString());
-            axios(server + getDetailsByIdAPI + element.toString(), {
-                method: 'GET',
-                "headers": { "accept": "text/html,application/xhtml+xml,application/xml" },
-            }).then(resp=>{
-                if(resp.status===200){
-                    console.log(resp.data);
-                }
-            }).catch((error) => {
-                this.setState({searchResults:'Server Unreachable!!!'})
-                console.log(error);
-            });
-        });
-
-    }
-    getImage(e){
-        e.forEach(element => {
-            axios(server + getImageByIdAPI + element, {
-                method: 'GET',
-                "headers": { "accept": "text/html,application/xhtml+xml,application/xml" },
-            }).then(resp=>{
-                if(resp.status===200){
-                   // console.log(resp.data);
-                }
-            }).catch((error) => {
-                this.setState({searchResults:'Server Unreachable!!!'})
-                console.log(error);
-            });
-        });
-
-    }
+    
     async handleSubmit(e){
         e.preventDefault();
         if(this.state.contact.length<=1){
@@ -62,8 +28,6 @@ export default class getUploads extends Component {
                     if(resp.data!=='Empty'){
                         this.setState({ searchResults: 'Data Found' })
                         this.setState({ids:resp.data.ids});
-                        this.getDetails(resp.data.ids);
-                        this.getImage(resp.data.ids);
 
                     }
                     else{this.setState({searchResults:'No Data Found'})}

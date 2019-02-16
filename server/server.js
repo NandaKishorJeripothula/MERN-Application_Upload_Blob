@@ -168,6 +168,21 @@ app.get('/api/getImageById/:id',function(req,res){
         res.send(data.userUpload.data);   
     });
 })
+//For APP PURPOSE ONLY IMAGEARRAYBUFFER
+app.get('/api/getImageArrayBufferById/:id',function(req,res){
+    var id=req.params.id;
+    up.findById(id, function (err, data) {
+        if(err){
+            console.log(err);
+            res.sendStatus(404);
+        }
+        console.log(data.userUpload.data);
+        console.log(data.userUpload);
+        console.log(data.userUpload.data.buffer)
+        res.setHeader('content-type', data.userUpload.contentType);
+        res.send(data.userUpload);   
+    });
+})
 
 //When closing server or stopping server close DB connection
 app.on('close',function(){
