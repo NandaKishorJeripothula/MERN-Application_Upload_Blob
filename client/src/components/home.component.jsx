@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component  } from 'react';
 import {server, uploadAPI} from '../config';
 export default class home extends Component {
     constructor(props){
         super(props);
-        this.state={name:'',contact:''};
+        this.state={name:'',contact:'',uploadStatus:''};
         this.handleSubmit= this.handleSubmit.bind(this);
         this.onContactChange= this.onContactChange.bind(this);
         this.onNameChange= this.onNameChange.bind(this);
@@ -18,6 +18,7 @@ export default class home extends Component {
     }
     handleSubmit(event) {
         event.preventDefault();
+        this.setState({uploadStatus:''});
         document.getElementById('spinner').classList.add('spinner-border');
         if(this.state.name.length<=1||this.state.contact.length<=1){
             alert("The fileds cannot be empty")
@@ -42,22 +43,28 @@ export default class home extends Component {
         }).then((resp) => {
             if(resp.status===200){
                 document.getElementById('spinner').classList.remove('spinner-border');
-                document.getElementById('successMsg').innerText="Upload Success!!!";
+                this.setState({uploadStatus:'Upload Success!!!'})
+                //document.getElementById('successMsg').innerText="Upload Success!!!";
                 this.setState({name:'',contact:''});
                 console.log("upload done")
             };
         }).catch((error) => {
             document.getElementById('spinner').classList.remove('spinner-border');
-            document.getElementById('successMsg').innerText="Server Unreachable";
+            this.setState({uploadStatus:'Server Unreachable!!!'})
+            //document.getElementById('successMsg').innerText="Server Unreachable";
             console.log(error);
         });
 
 
         
       }
-    render() {
-        return (
-            <div>
+    render() { 
+        let dataLoader;
+       return (
+            <div className='container'>     
+                <div className='row'>
+                <div className='col'>
+                <div className='slice left'>
                 <p>Welcome </p>
                 <form onSubmit={this.handleSubmit}>
                     <div className='form-group'>
@@ -92,9 +99,17 @@ export default class home extends Component {
                 </form>
                 <div id='spinner' role="status">
                     <span className="sr-only">Loading...</span>
-                    <h3 id="successMsg"> </h3>
+                    <h3 id="successMsg">{this.state.uploadStatus}</h3>
                 </div>
             </div>
+            </div>
+                <div className='col slice' id='dataloader'>
+                {dataLoader}
+                </div>
+            </div>
+                    
+        </div>
         )
     }
 }
+

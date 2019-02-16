@@ -92,9 +92,20 @@ app.get('/api/getUploads',function(req,res){
     up.find( function(err,data){
         if(err) throw err;
         else
-           res.send( data +" data here ");
+           res.send(JSON.stringify(data));
     });
 });
+
+app.get('/api/getAllIds',function(req,res){
+    up.find({},'_id', function (err, data) {
+        if(err){
+            console.log(err);
+            res.sendStatus(404);
+        }
+        const idList= data.map(element => element._id);
+        res.send(idList);   
+    });
+})
 
 // Step 1 to retrieve all the images uploaded by Contact
 //Iterate through the ids list and procees step 2 and step 3 
@@ -103,20 +114,32 @@ app.get('/api/getIdsByContact/:contact',function(req,res){
     up.find({userContact:{data: contact}}, function (err, data) {
         if(err){
             console.log(err);
-            res.sendStatus(404);
+            res.sendStatus(404);    
         }
-        const idList= data.map(element => element._id);
-        //Its an array, can change it to object with{}
-        /* This is same as map funciton
-        idList=[];
-        i=0;
-        data.forEach(element => {
-            idList[i]=(element._id);
-            i++;
-        }); 
-        console.log(idList);
-        */
-        res.send(idList);   
+        if(data.length==0){
+            res.sendStatus(404);
+            //res.send("No Data Found");
+        }
+        else{
+            const idList= data.map(element => element._id);
+            //Its an array, can change it to object with{}
+            // This is same as map funciton
+            /*idList={};
+            i=0;
+            data.forEach(element => {   
+                idList[i]=(i,element._id);
+                i++;
+            }); 
+            console.log(idList);
+            idList.forEach(e=>{
+                console.log(e);
+            })
+            */
+            
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify({'ids':idList}));
+
+        }
     });
 })
 //Step 2 Get the Image Name and DemoGraphic data of User 
@@ -150,10 +173,12 @@ app.on('close',function(){
     connection.close();
 })
 //Please maintain this API just above the listen method for app consistency
+/* 
 app.get('*',function(req,res){
-    res.send("404 Route Not Found");
     res.sendStatus(404);
-});
+    res.send("404 Route Not Found");
+    
+});*/
 app.listen(PORT, function() {
     console.log("Server is running on Port: " + PORT);
 });

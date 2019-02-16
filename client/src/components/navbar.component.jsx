@@ -16,6 +16,9 @@ export default class Navbar extends Component {
                         <li className="navbar-item">
                             <Link to="/getUploads" className="nav-link">Get Your Uploads</Link>
                         </li>
+                        <li className="navbar-item">
+                            <Link to="/getAllUploads" className="nav-link">Get All Uploads</Link>
+                        </li>
                     </ul>
                 </div>
             </div>
