@@ -117,8 +117,9 @@ app.get('/api/getIdsByContact/:contact',function(req,res){
             res.sendStatus(404);    
         }
         if(data.length==0){
-            res.sendStatus(404);
-            //res.send("No Data Found");
+            res.send('Empty');
+
+            //res.send("Bad REquest");
         }
         else{
             const idList= data.map(element => element._id);
