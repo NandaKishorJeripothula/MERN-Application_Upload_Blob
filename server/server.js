@@ -82,7 +82,7 @@ app.post('/api/uploads',function(req,res){
                 res.sendStatus(504);
                 throw err;
             }
-            console.log("upload successfull this is call back ");
+            //console.log("upload successfull this is call back ");
             res.sendStatus(200);
         });
     });
@@ -103,7 +103,7 @@ app.get('/api/getAllIds',function(req,res){
             res.sendStatus(404);
         }
         const idList= data.map(element => element._id);
-        res.send(idList);   
+        res.send({'ids':idList});   
     });
 })
 
@@ -176,9 +176,6 @@ app.get('/api/getImageArrayBufferById/:id',function(req,res){
             console.log(err);
             res.sendStatus(404);
         }
-        console.log(data.userUpload.data);
-        console.log(data.userUpload);
-        console.log(data.userUpload.data.buffer)
         res.setHeader('content-type', data.userUpload.contentType);
         res.send(data.userUpload);   
     });

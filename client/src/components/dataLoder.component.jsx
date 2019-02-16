@@ -63,12 +63,13 @@ export default class DataLoader extends Component {
             <img src={this.props.file} alt={this.props.file.path} className="img-responsive" /><span>Hello {this.props.name}</span>
      */
     return (
-      <div>
-           {this.props.id}
-           <h3>{this.state.userName}</h3>
-            <h3>{this.state.userContact}</h3>
-            <img src={this.state.userUploadContentURL} alt={this.state.userUploadName} className="img-responsive" />
- 
+      <div id="dataLoader" className="container">
+        <img id="dataLoaderImage" src={this.state.userUploadContentURL} alt={this.state.userUploadName} className="img-responsive" />
+        <div class="content">
+          <p>{this.state.userName}</p>
+          <p>{this.state.userContact}</p>
+          <p>{this.state.userUploadName}</p>
+        </div>
       </div>
     )
   }

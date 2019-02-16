@@ -3,7 +3,29 @@
   float: right;
   margin-left:20px; 
 }
+#dataLoader {
+  width: 20%;
+  height: auto;
+  position: relative; 
+  margin: 0 auto; /* Center it */
+}
+#dataLoaderImage{
+  width: 100%;
+  height: auto;
+} 
 
+
+#dataLoader .content {
+  position: absolute; /* Position the background text */
+  bottom: 0; /* At the bottom. Use top:0 to append it to the top */
+  background: rgba(0, 0, 0, 0.4); /* Black background with 0.5 opacity */
+  color: #f1f1f1; /* Grey text */
+  width: 100%; /* Full width */
+  padding: 4px; /* Some padding */
+  margin-top:5px; 
+  font-weight: 200;
+  line-height: 20%;
+}
 .slice{
   width: 95%;
   margin: 10px;
@@ -16,7 +38,6 @@
 }
 .left{
   float: left;
-
 }
 .App {
   text-align: center;

@@ -20,7 +20,6 @@ export default class getUploads extends Component {
             let uri= server.toString() + getIdByContactAPI.toString() + this.state.contact.toString();
             console.log(uri);
             await axios(uri, {
-            //axios('http://localhost:4000/api/getIdsByContact/52344535', {
                 method: 'GET',
                 "headers":{"accept":"text/html,application/xhtml+xml,application/xml"},
             }).then((resp) => {
@@ -28,7 +27,6 @@ export default class getUploads extends Component {
                     if(resp.data!=='Empty'){
                         this.setState({ searchResults: 'Data Found' })
                         this.setState({ids:resp.data.ids});
-
                     }
                     else{this.setState({searchResults:'No Data Found'})}
                 }
