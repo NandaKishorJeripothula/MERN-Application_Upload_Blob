@@ -37,19 +37,13 @@ export default class DataLoader extends Component {
       axios(server + getImageByIdAPI + e.toString(), {
         method: 'GET',
         "headers": { "accept": "text/html,application/xhtml+xml,application/xml" },
-        responseType:"blob"
+        responseType:"arraybuffer"
       }).then(resp => {
         if (resp.status === 200) {
-          //TRICKY PART PLEASE PAY ATTENTION
-          console.log(resp.headers.contentType) ;
-          //The Response is base64 Image with content type as header, construct Unit8Array Buffer 
-          var imageArray=new Uint8Array( resp.data);
-          // Generate Blob, here image response header( its type ) is the options to blob
-          var blob = new Blob( [ imageArray ], { type: resp.headers["content-type"]} );
-          //Generate temporary url
+          var imageArrayBufferView = new Uint8Array( resp.data );
+          var blob = new Blob( [ imageArrayBufferView ], { type: resp.headers["content-type"] } );
           var urlCreator = window.URL || window.webkitURL;
-          var imageUrl = urlCreator.createObjectURL( resp );
-          console.log(imageUrl);
+          var imageUrl = urlCreator.createObjectURL( blob );
           this.setState({userUploadContentURL:imageUrl});
 
         }
